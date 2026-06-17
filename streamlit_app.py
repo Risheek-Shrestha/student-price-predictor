@@ -827,14 +827,18 @@ elif page == "Predict":
         studytime = d["studytime"]; failures = d["failures"]
         medu = d["medu"]; fedu = d["fedu"]
 
+        # Read the live backend URL from Render's environment, or default to local if not set
+        backend_base_url = os.environ.get("BACKEND_API_URL", "http://127.0.0.1:8000")
+
         try:
-            backend_base_url = os.environ.get("BACKEND_API_URL", "http://127.0.0.1:8000")
-            response = requests.post(f"{backend_base_url.strip('/')}/api/predict/",
-                                     json={"g1": g1, "g2": g2, "failures": failures,
-                                    "studytime": studytime, "medu": medu, "fedu": fedu})
+            response = requests.post(
+                f"{backend_base_url.rstrip('/')}/api/predict/",
+                json={"g1": g1, "g2": g2, "failures": failures,
+                    "studytime": studytime, "medu": medu, "fedu": fedu}
+                )
             prediction = response.json()["predicted_grade"]
         except Exception as e:
-            st.error(f"Could not reach the API backend: {e}")
+            st.error(f"Could not reach the API at {backend_base_url}: {e}")
             st.stop()
 
         percentage = min(int((prediction / 20) * 100), 100)
