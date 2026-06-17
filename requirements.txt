@@ -6,3 +6,8 @@ joblib
 matplotlib
 seaborn
 plotly
+requests
+django
+djangorestframework
+gunicorn
+xgboost
